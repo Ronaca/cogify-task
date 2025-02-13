@@ -36,3 +36,8 @@ Thumbs.db
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 ###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
