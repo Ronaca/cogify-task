@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+
 
 #[ApiResource] // Expose this entity via API Platform
 #[ORM\Entity]
@@ -12,10 +14,8 @@ class Book
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: "integer")]
-    private ?int $id = null; // ID as primary key
-
     #[ORM\Column(type: "string", length: 20, unique: true)]
+    #[ApiProperty(identifier: true)]
     private string $isbn;
 
     #[ORM\Column(type: "string", length: 255)]
@@ -31,10 +31,6 @@ class Book
     private string $genre;
 
     // Getters and Setters
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getIsbn(): string
     {

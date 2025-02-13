@@ -20,7 +20,7 @@ final class Version20250213101558 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE books (id INT AUTO_INCREMENT NOT NULL, isbn VARCHAR(13) NOT NULL, title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, published_year INT NOT NULL, genre VARCHAR(100) NOT NULL, UNIQUE INDEX UNIQ_4A1B2A92CC1CF4E6 (isbn), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE IF NOT EXISTS books (id INT AUTO_INCREMENT NOT NULL, isbn VARCHAR(13) NOT NULL, title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, published_year INT NOT NULL, genre VARCHAR(100) NOT NULL, UNIQUE INDEX UNIQ_4A1B2A92CC1CF4E6 (isbn), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('DROP TABLE book');
     }
 
