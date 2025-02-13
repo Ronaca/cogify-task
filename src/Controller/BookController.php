@@ -9,71 +9,118 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/books')]
+#[Route('/api/books', name: 'book_')]
 class BookController extends AbstractController
 {
-    #[Route('', methods: ['GET'])]
-    public function list(EntityManagerInterface $em): JsonResponse
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $books = $em->getRepository(Book::class)->findAll();
+        $this->entityManager = $entityManager;
+    }
+
+    // 1. List all books
+    #[Route('', name: 'list', methods: ['GET'])]
+    public function list(): JsonResponse
+    {
+        $books = $this->entityManager->getRepository(Book::class)->findAll();
+
         return $this->json($books);
     }
 
-    #[Route('/{isbn}', methods: ['GET'])]
-    public function getBook(string $isbn, EntityManagerInterface $em): JsonResponse
+    // 2. Get a book by ISBN
+    #[Route('/isbn/{isbn}', name: 'get_by_isbn', methods: ['GET'])]
+    public function getByIsbn(string $isbn): JsonResponse
     {
-        $book = $em->getRepository(Book::class)->find($isbn);
-        return $book ? $this->json($book) : $this->json(['error' => 'Book not found'], 404);
-    }
+        $book = $this->entityManager->getRepository(Book::class)->findOneBy(['isbn' => $isbn]);
 
-    #[Route('', methods: ['POST'])]
-    public function addBook(Request $request, EntityManagerInterface $em): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $book = new Book();
-        $book->setTitle($data['title']);
-        $book->setAuthor($data['author']);
-        $book->setPublishedYear($data['publishedYear']);
-        $book->setGenre($data['genre']);
-
-        $em->persist($book);
-        $em->flush();
-
-        return $this->json($book, 201);
-    }
-
-    #[Route('/{isbn}', methods: ['PUT'])]
-    public function updateBook(string $isbn, Request $request, EntityManagerInterface $em): JsonResponse
-    {
-        $book = $em->getRepository(Book::class)->find($isbn);
         if (!$book) {
-            return $this->json(['error' => 'Book not found'], 404);
+            return $this->json(['message' => 'Book not found'], 404);
         }
-
-        $data = json_decode($request->getContent(), true);
-        $book->setTitle($data['title'] ?? $book->getTitle());
-        $book->setAuthor($data['author'] ?? $book->getAuthor());
-        $book->setPublishedYear($data['publishedYear'] ?? $book->getPublishedYear());
-        $book->setGenre($data['genre'] ?? $book->getGenre());
-
-        $em->flush();
 
         return $this->json($book);
     }
 
-    #[Route('/{isbn}', methods: ['DELETE'])]
-    public function deleteBook(string $isbn, EntityManagerInterface $em): JsonResponse
+    // 3. Add a new book
+    #[Route('', name: 'create', methods: ['POST'])]
+    public function create(Request $request): JsonResponse
     {
-        $book = $em->getRepository(Book::class)->find($isbn);
-        if (!$book) {
-            return $this->json(['error' => 'Book not found'], 404);
+        $data = json_decode($request->getContent(), true);
+
+        // Validate required fields
+        if (!isset($data['isbn'], $data['title'], $data['author'], $data['publishedYear'], $data['genre'])) {
+            return $this->json(['message' => 'Missing required fields'], 400);
         }
 
-        $em->remove($book);
-        $em->flush();
+        // Check if ISBN already exists
+        if ($this->entityManager->getRepository(Book::class)->findOneBy(['isbn' => $data['isbn']])) {
+            return $this->json(['message' => 'A book with this ISBN already exists'], 409);
+        }
+
+        $book = new Book();
+        $book->setIsbn($data['isbn'])
+            ->setTitle($data['title'])
+            ->setAuthor($data['author'])
+            ->setPublishedYear($data['publishedYear'])
+            ->setGenre($data['genre']);
+
+        $this->entityManager->persist($book);
+        $this->entityManager->flush();
+
+        return $this->json($book, 201);
+    }
+
+    // 4. Update an existing book (by ID)
+    #[Route('/{id}', name: 'update', methods: ['PUT'])]
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $book = $this->entityManager->getRepository(Book::class)->find($id);
+
+        if (!$book) {
+            return $this->json(['message' => 'Book not found'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        // Update fields if provided
+        if (isset($data['isbn'])) {
+            $existingBook = $this->entityManager->getRepository(Book::class)->findOneBy(['isbn' => $data['isbn']]);
+            if ($existingBook && $existingBook->getId() !== $book->getId()) {
+                return $this->json(['message' => 'Another book with this ISBN already exists'], 409);
+            }
+            $book->setIsbn($data['isbn']);
+        }
+        if (isset($data['title'])) {
+            $book->setTitle($data['title']);
+        }
+        if (isset($data['author'])) {
+            $book->setAuthor($data['author']);
+        }
+        if (isset($data['publishedYear'])) {
+            $book->setPublishedYear($data['publishedYear']);
+        }
+        if (isset($data['genre'])) {
+            $book->setGenre($data['genre']);
+        }
+
+        $this->entityManager->flush();
+
+        return $this->json($book);
+    }
+
+    // 5. Delete a book (by ID)
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
+    public function delete(int $id): JsonResponse
+    {
+        $book = $this->entityManager->getRepository(Book::class)->find($id);
+
+        if (!$book) {
+            return $this->json(['message' => 'Book not found'], 404);
+        }
+
+        $this->entityManager->remove($book);
+        $this->entityManager->flush();
 
         return $this->json(['message' => 'Book deleted']);
     }
 }
-
