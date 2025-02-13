@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 
+#[ApiResource] // Expose this entity via API Platform
 #[ORM\Entity]
 #[ORM\Table(name: "books")]
 class Book
@@ -13,7 +15,7 @@ class Book
     #[ORM\Column(type: "integer")]
     private ?int $id = null; // ID as primary key
 
-    #[ORM\Column(type: "string", length: 13, unique: true)]
+    #[ORM\Column(type: "string", length: 20, unique: true)]
     private string $isbn;
 
     #[ORM\Column(type: "string", length: 255)]
