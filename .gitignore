@@ -1,0 +1,38 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Symfony / PHP dependencies
+/var/
+/vendor/
+/node_modules/
+
+# Ignore logs and cache
+/var/log/
+/var/cache/
+*.log
+
+# Ignore environment settings
+.env
+.env.local
+.env.*.local
+
+# Ignore Docker-related files
+/docker-compose.override.yml
+/.docker/
+
+# Ignore database files (if using SQLite)
+*.sqlite
+*.sqlite-journal
+
+# Ignore PHPStorm / IntelliJ IDEA settings
+/.idea/
+
+# Ignore PHPUnit test results
+/phpunit.xml
+/phpunit.xml.dist
+
+###> symfony/framework-bundle ###
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+###< symfony/framework-bundle ###
