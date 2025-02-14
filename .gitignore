@@ -30,7 +30,6 @@ Thumbs.db
 
 # Ignore PHPUnit test results
 /phpunit.xml
-/phpunit.xml.dist
 
 ###> symfony/framework-bundle ###
 /config/secrets/prod/prod.decrypt.private.php
@@ -38,6 +37,8 @@ Thumbs.db
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
-/phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+###< symfony/phpunit-bridge ###

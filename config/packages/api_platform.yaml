@@ -1,11 +1,23 @@
 api_platform:
+    use_symfony_listeners: true
+    serializer:
+        hydra_prefix: false
+    defaults:
+        extra_properties:
+            standard_put: true
+            rfc_7807_compliant_errors: false
+    keep_legacy_inflector: false
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+        swagger_ui_extra_configuration:
+            graphqlEnabled: false
     show_webby: false
+    graphql:
+        enabled: false
     formats:
         json:
             mime_types: ['application/json']

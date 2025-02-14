@@ -1,0 +1,9 @@
+# config/packages/test/monolog.yaml
+monolog:
+  channels: ["test"]
+
+  handlers:
+    # Add a handler for the test environment
+    test:
+      type: console
+      level: warning  # Set the log level to warning to hide info and debug messages
