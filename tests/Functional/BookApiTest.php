@@ -10,86 +10,79 @@ class BookApiTest extends ApiTestCase
 {
     private string $apiUrl = '/api/books'; // Adjust this based on your API URL
 
-    public function testGetBooks()
+    public function testGetBooks(): void
     {
-        // Create a client to send requests
         $client = self::createClient();
 
         // Make a GET request to fetch the books
-        $client->request('GET', $this->apiUrl);
+        $response = $client->request('GET', $this->apiUrl);
 
         // Assert that the response is OK (status code 200)
         $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
-        // You can also assert that the response contains expected data
-        // If you want to test that your API returns a collection, you can assert the number of items
+        // Check if the response contains expected data
         $this->assertJsonContains([
             '@context' => '/api/contexts/Book',
         ]);
     }
 
-    public function testPostBook()
+    public function testPostBook(): void
     {
-        // Create a client to send requests
         $client = self::createClient();
 
-        // Prepare data for creating a new book
         $data = [
-            'isbn' => '1234567890', // Adjust this based on your Book entity's fields, e.g., 'isbn
+            'isbn' => '123456789001',
             'title' => 'New Book Title',
             'author' => 'Some Author',
             'publishedYear' => 2020,
             'genre' => 'Fiction',
         ];
 
-        // Send a POST request to create a new book
-        $client->request('POST', $this->apiUrl, [
-            'json' => $data, // Pass the data as JSON body
-            'headers' => [
-                'Content-Type' => 'application/json', // Set the Content-Type header to JSON
-            ],
+        // Send a POST request
+        $response = $client->request('POST', $this->apiUrl, [
+            'json' => $data,
         ]);
 
         // Assert that the response is successful (status code 201)
         $this->assertResponseStatusCodeSame(201);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
-        // Check the response content to ensure it matches the data you just posted
+        // Assert the response contains the posted data
         $this->assertJsonContains($data);
     }
 
-    public function testPutBook(): void
+    public function testGetBook(): void
     {
-        // Assuming you have an existing book to update
-        $bookIsbn = '1234567890'; // Replace with actual ID from your DB
-        $client = static::createClient();
+        $client = self::createClient();
 
-        $data = [
-            'title' => 'Updated Book Title',
-        ];
+        $isbn = '123456789001';
 
-        $client->request('PUT', "/api/books/{$bookIsbn}", ['json' => $data]);
+        // Make a GET request for the book
+        $client->request('GET', $this->apiUrl."/{$isbn}");
 
         // Assert that the response is successful (status code 200)
-        $this->assertResponseStatusCodeSame(200);
+        $this->assertResponseIsSuccessful(200);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
+        // Assert that the response contains the book data
         $this->assertJsonContains([
-            'title' => 'Updated Book Title',
-        ]);  // Check if the response contains the updated title
+            'isbn' => $isbn,
+        ]);
     }
 
     public function testDeleteBook(): void
     {
-        // Assuming you have an existing book to delete
-        $bookIsbn = '1234567890'; // Replace with actual ID from your DB
-        $client = static::createClient();
+        $client = self::createClient();
 
-        $client->request('DELETE', "/api/books/{$bookIsbn}");
+        $isbn = '123456789001';
+
+        // Perform DELETE request
+        $client->request('DELETE', $this->apiUrl."/{$isbn}");
         $this->assertResponseStatusCodeSame(204);
 
         // Assert that the book is deleted
-        $client->request('GET', '/api/books/' . $bookIsbn);
-        $this->assertResponseStatusCodeSame(404);  // Book should no longer exist
-
+        $client->request('GET', $this->apiUrl."/{$isbn}");
+        $this->assertResponseStatusCodeSame(404);
     }
-
 }

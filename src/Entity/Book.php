@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\ApiResource;
 
+
 #[ApiResource]
 #[ORM\Entity]
 #[ORM\Table(name: "books")]

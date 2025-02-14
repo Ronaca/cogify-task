@@ -2,11 +2,19 @@ api_platform:
     use_symfony_listeners: true
     serializer:
         hydra_prefix: false
+    inflector: api_platform.metadata.inflector
     defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+        normalization_context:
+            skip_null_values: true
         extra_properties:
             standard_put: true
-            rfc_7807_compliant_errors: false
-    keep_legacy_inflector: false
+            rfc_7807_compliant_errors: true
+    validator:
+        query_parameter_validation: true
+        serialize_payload_fields: []  # Empty array means no specific fields are serialized
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
