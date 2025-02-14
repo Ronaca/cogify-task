@@ -15,7 +15,7 @@ class BookApiTest extends ApiTestCase
         $client = self::createClient();
 
         // Make a GET request to fetch the books
-        $response = $client->request('GET', $this->apiUrl);
+        $client->request('GET', $this->apiUrl);
 
         // Assert that the response is OK (status code 200)
         $this->assertResponseIsSuccessful();
@@ -32,7 +32,7 @@ class BookApiTest extends ApiTestCase
         $client = self::createClient();
 
         $data = [
-            'isbn' => '123456789001',
+            'isbn' => '123456789004',
             'title' => 'New Book Title',
             'author' => 'Some Author',
             'publishedYear' => 2020,
@@ -40,7 +40,7 @@ class BookApiTest extends ApiTestCase
         ];
 
         // Send a POST request
-        $response = $client->request('POST', $this->apiUrl, [
+        $client->request('POST', $this->apiUrl, [
             'json' => $data,
         ]);
 
@@ -56,7 +56,7 @@ class BookApiTest extends ApiTestCase
     {
         $client = self::createClient();
 
-        $isbn = '123456789001';
+        $isbn = '123456789004';
 
         // Make a GET request for the book
         $client->request('GET', $this->apiUrl."/{$isbn}");
@@ -75,7 +75,7 @@ class BookApiTest extends ApiTestCase
     {
         $client = self::createClient();
 
-        $isbn = '123456789001';
+        $isbn = '123456789004';
 
         $data = [
             'title' => 'Updated Book Title',
@@ -84,9 +84,10 @@ class BookApiTest extends ApiTestCase
             'genre' => 'Non-Fiction',
         ];
 
-        // Send a PUT request
+        // Send a PATCH request
         $client->request('PATCH', $this->apiUrl."/{$isbn}", [
             'json' => $data,
+            'headers' => ['Content-Type' => 'application/merge-patch+json']
         ]);
 
         // Assert that the response is successful (status code 200)
@@ -101,7 +102,7 @@ class BookApiTest extends ApiTestCase
     {
         $client = self::createClient();
 
-        $isbn = '123456789001';
+        $isbn = '123456789004';
 
         // Perform DELETE request
         $client->request('DELETE', $this->apiUrl."/{$isbn}");

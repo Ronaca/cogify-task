@@ -29,7 +29,7 @@ Thumbs.db
 /.idea/
 
 # Ignore PHPUnit test results
-/phpunit.xml.example
+phpunit.xml
 
 ###> symfony/framework-bundle ###
 /config/secrets/prod/prod.decrypt.private.php
