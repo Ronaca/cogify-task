@@ -10,23 +10,6 @@ class BookApiTest extends ApiTestCase
 {
     private string $apiUrl = '/api/books'; // Adjust this based on your API URL
 
-    public function testGetBooks(): void
-    {
-        $client = self::createClient();
-
-        // Make a GET request to fetch the books
-        $client->request('GET', $this->apiUrl);
-
-        // Assert that the response is OK (status code 200)
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-
-        // Check if the response contains expected data
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Book',
-        ]);
-    }
-
     public function testPostBook(): void
     {
         $client = self::createClient();
@@ -50,6 +33,23 @@ class BookApiTest extends ApiTestCase
 
         // Assert the response contains the posted data
         $this->assertJsonContains($data);
+    }
+
+    public function testGetBooks(): void
+    {
+        $client = self::createClient();
+
+        // Make a GET request to fetch the books
+        $client->request('GET', $this->apiUrl);
+
+        // Assert that the response is OK (status code 200)
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        // Check if the response contains expected data
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/Book',
+        ]);
     }
 
     public function testGetBook(): void
