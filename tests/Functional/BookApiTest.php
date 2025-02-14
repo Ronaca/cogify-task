@@ -71,6 +71,32 @@ class BookApiTest extends ApiTestCase
         ]);
     }
 
+    public function testUpdateBook(): void
+    {
+        $client = self::createClient();
+
+        $isbn = '123456789001';
+
+        $data = [
+            'title' => 'Updated Book Title',
+            'author' => 'Updated Author',
+            'publishedYear' => 2021,
+            'genre' => 'Non-Fiction',
+        ];
+
+        // Send a PUT request
+        $client->request('PATCH', $this->apiUrl."/{$isbn}", [
+            'json' => $data,
+        ]);
+
+        // Assert that the response is successful (status code 200)
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        // Assert the response contains the updated data
+        $this->assertJsonContains($data);
+    }
+
     public function testDeleteBook(): void
     {
         $client = self::createClient();
