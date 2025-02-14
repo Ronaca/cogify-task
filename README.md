@@ -63,7 +63,12 @@ To set up the database, run the following commands:
 php bin/console doctrine:migrations:migrate
 ```
 
-### 6. Run tests
+### 6. Access the Application
+
+You can access the application at `http://localhost:8000`.
+From there, you can go to the `/api` endpoint to view the API documentation.
+
+### 7. Run tests
 
 Create the test database:
 
@@ -82,7 +87,6 @@ Copy the `phpunit.xml.example` file to `phpunit.xml`:
 ```bash
 cp phpunit.xml.example phpunit.xml
 ```
-
 
 Run tests:
 
