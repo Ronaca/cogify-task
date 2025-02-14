@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+        bootstrap="vendor/autoload.php"
+        colors="true"
+        stopOnFailure="true"
+>
+    <testsuites>
+        <testsuite name="Application Test Suite">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <server name="APP_ENV" value="test"/>
+        <server name="DATABASE_URL" value="mysql://root:root@127.0.0.1:3306/library_test?serverVersion=8.4.4"/>
+        <env name="KERNEL_CLASS" value="App\Kernel"/>
+        <env name="CORS_ALLOW_ORIGIN" value="^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$"/>
+    </php>
+</phpunit>
